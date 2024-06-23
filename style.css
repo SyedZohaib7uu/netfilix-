@@ -1,0 +1,34 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html , body{
+    height: 100%;
+    width: 100%;
+}
+.main{
+    position: relative;
+}
+.cover{
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    justify-content: center;
+background-color: blue;
+}
+nav{
+    width: 90%;
+    /* background-color: red; */
+    height: 8vh;
+    display: flex;
+    justify-content: space-between;
+align-items: center;
+}.part1 img{
+width: 19vh;
+}
+.part2 img{
+width: 5vh;
+cursor: pointer;
+}

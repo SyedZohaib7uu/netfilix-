@@ -16,9 +16,16 @@ html , body{
     position: relative;
     display: flex;
     justify-content: center;
-background-color: blue;
+    background-image: url("./banner.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+/* background-color: black; */
 }
+
 nav{
+    top: 0;
+    position: fixed;
     width: 90%;
     /* background-color: red; */
     height: 8vh;
@@ -31,4 +38,27 @@ width: 19vh;
 .part2 img{
 width: 5vh;
 cursor: pointer;
+}
+.home{
+    width: 100%;
+    height: 100%;
+    /* background-color: white; */
+ padding: 180px 4vw;
+ color: white;
+
+}
+.home h1{
+    font-size: 10vmin;
+}
+.home .btnh{
+    padding: 5px 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.764);
+    color: white;
+    cursor: pointer;
+
+}
+.home p{
+     font-size: 2vw;
 }

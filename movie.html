@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet" />
+    <title>Movie -Netfilix</title>
+</head>
+<body>
+    <div class="ci">
+
+        <div class="movie">
+            <div class="poster">
+                <div class="iufdy">
+
+                    <a href="./home.html"><i class="ri-arrow-left-circle-line"></i></a>
+                    <p id="movieTitle"></p>
+                </div>
+                <img src="" id="movieBackdrop" alt="">
+            </div>
+            <footer>
+                <p id="movieReleaseDate" class="ol"></p>
+                <p id="movieOverview" class="ol"></p>
+            </footer>
+        </div>
+        
+    </div>
+   
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+  // Retrieve stored movie details from localStorage
+  const selectedMovie = JSON.parse(localStorage.getItem('selectedMovie'));
+
+  // Check if selectedMovie is available and not null
+  if (selectedMovie) {
+    // Update the DOM with movie details
+    const movieTitleElement = document.getElementById('movieTitle');
+    const movieBackdropElement = document.getElementById('movieBackdrop');
+    const movieReleaseDateElement = document.getElementById('movieReleaseDate');
+    const movieOverviewElement = document.getElementById('movieOverview');
+
+    // Set textContent and src attributes
+    movieTitleElement.textContent = selectedMovie.title;
+    movieBackdropElement.src = `https://image.tmdb.org/t/p/w500${selectedMovie.backdrop_path}`;
+    movieReleaseDateElement.textContent = `Release Date: ${selectedMovie.release_date}`;
+    movieOverviewElement.textContent = "Trailer";
+    // Add more elements as needed
+  } else {
+    // Handle case where selectedMovie is not available (optional)
+    console.log('No movie selected');
+  }
+});
+</script>
+</body>
+</html>

@@ -42,10 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
           const user = userCredential.user;
           console.log(user);
           window.location.href = "./home.html";
-        //   alert("Successfully Created Account");
         })
         .catch((error) => {
-          const errorCode = error.code;
           const errorMessage = error.message;
           alert(errorMessage);
           console.log(errorMessage);
@@ -63,14 +61,11 @@ document.addEventListener("DOMContentLoaded", () => {
       signInWithEmailAndPassword(auth, loginEmailValue, loginPasswordValue)
         .then((userCredential) => {
           // Signed in 
-
           const user = userCredential.user;
           console.log(user);
           window.location.href = "./home.html";
-        //   alert("Successfully Logged In");
         })
         .catch((error) => {
-          const errorCode = error.code;
           const errorMessage = error.message;
           alert(errorMessage);
           console.log(errorMessage);
@@ -81,7 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
       signOut(auth).then(() => {
-        // alert("SignOut Successfully");
         window.location.href = "./index.html";
       }).catch((error) => {
         alert(error);
@@ -92,8 +86,8 @@ document.addEventListener("DOMContentLoaded", () => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       // User is signed in
-      document.getElementById("uname").innerHTML=user.email
-
+      const uname = document.getElementById("uname");
+      if (uname) uname.innerHTML = user.email;
       console.log("User is signed in:", user);
       if (window.location.pathname === "/index.html" || window.location.pathname === "/register.html") {
         window.location.href = "./home.html";
@@ -107,177 +101,286 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-
-
-    // fetch Now playing movie
-
-const options = {
-  method: 'GET',
+  // Fetch Now playing movie
+  const options = {
+    method: 'GET',
     headers: {
       accept: 'application/json',
       Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NTlkYWEyMjNiZGQzY2IzNzkyNTk5MDdmNTkxM2NhYyIsIm5iZiI6MTcxOTMzMDU2Ni4zNjEzODIsInN1YiI6IjY2N2FlNTQ3ZmQ3MmNjZmRjZTVhMzYzNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.kAW1bb0FfBlaqALldkj4G215DvJznqjK8N3ZzYfDteE'
     }
   };
-  
-  let page = 1;
-  const btnPre = document.getElementById("pren");
-  const btnNext = document.getElementById("nextn");
+  let pageNowPlaying = 1;
+  const btnPreNowPlaying = document.getElementById("pren");
+  const btnNextNowPlaying = document.getElementById("nextn");
 
-  // Initial fetch of now playing movies
-  fetchNowPlayingMovies(page);
-
-  if (page === 1) {
-    btnPre.classList.add("disa"); // Disable previous button initially
-  }
-
-  btnNext.addEventListener("click", () => {
-    page++;
-    if (page > 1) {
-      btnPre.classList.remove("disa"); // Enable previous button if we move to page > 1
+  if (btnPreNowPlaying && btnNextNowPlaying) {
+    if (pageNowPlaying === 1) {
+      btnPreNowPlaying.classList.add("disa"); // Disable previous button initially
     }
-    fetchNowPlayingMovies(page);
-  });
 
-  btnPre.addEventListener("click", () => {
-    if (page > 1) {
-      page--;
-      if (page === 1) {
-        btnPre.classList.add("disa"); // Disable previous button if we are on page 1
+    btnNextNowPlaying.addEventListener("click", () => {
+      pageNowPlaying++;
+      if (pageNowPlaying > 1) {
+        btnPreNowPlaying.classList.remove("disa"); // Enable previous button if we move to page > 1
       }
-      fetchNowPlayingMovies(page);
-    }
-  });
+      fetchNowPlayingMovies(pageNowPlaying);
+    });
+
+    btnPreNowPlaying.addEventListener("click", () => {
+      if (pageNowPlaying > 1) {
+        pageNowPlaying--;
+        if (pageNowPlaying === 1) {
+          btnPreNowPlaying.classList.add("disa"); // Disable previous button if we are on page 1
+        }
+        fetchNowPlayingMovies(pageNowPlaying);
+      }
+    });
+
+    fetchNowPlayingMovies(pageNowPlaying);
+  }
 
   function fetchNowPlayingMovies(page) {
     const url = `https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=${page}`;
-    const options = {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NTlkYWEyMjNiZGQzY2IzNzkyNTk5MDdmNTkxM2NhYyIsIm5iZiI6MTcxOTMzMDU2Ni4zNjEzODIsInN1YiI6IjY2N2FlNTQ3ZmQ3MmNjZmRjZTVhMzYzNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.kAW1bb0FfBlaqALldkj4G215DvJznqjK8N3ZzYfDteE'
-      }
-    };
-
     fetch(url, options)
       .then(response => response.json())
       .then((res) => {
         const nowPlayingMovie = document.getElementById("nowplaying-sec");
-        nowPlayingMovie.innerHTML = ''; // Clear previous content
-        res.results.forEach(element => {
-          nowPlayingMovie.innerHTML += `
-            <div class="cap">
+        if (nowPlayingMovie) {
+          nowPlayingMovie.innerHTML = ''; // Clear previous content
+          res.results.forEach(element => {
+            // Create a div for each movie poster and details
+            const movieDiv = document.createElement('div');
+            movieDiv.classList.add('cap');
+            movieDiv.innerHTML = `
               <img src="https://image.tmdb.org/t/p/w500${element.poster_path}" alt="${element.title}">
               <h2>${element.title}</h2>
-            </div>
-          `;
-        });
+            `;
+            // Add click event listener to each movie poster
+            movieDiv.addEventListener('click', () => {
+              // Store selected movie details in localStorage or pass via URL parameters
+              localStorage.setItem('selectedMovie', JSON.stringify(element));
+              // Navigate to movie.html
+              window.location.href = "./movie.html";
+            });
+            // Append the movie div to the container
+            nowPlayingMovie.appendChild(movieDiv);
+          });
+        }
       })
       .catch(err => console.error(err));
   }
-  var pagepop = 1;
-  const btnPrep = document.getElementById("prep");
-  const btnNextp = document.getElementById("nextp");
-  
-  popularMovie(pagepop);
-  
-  if (pagepop === 1) {
-    btnPrep.classList.add("disa");
-  }
-  
-  btnNextp.addEventListener("click", () => {
-    pagepop++;
-    if (pagepop > 1) {
-      btnPrep.classList.remove("disa");
+
+  let pagePopular = 1;
+  const btnPrePopular = document.getElementById("prep");
+  const btnNextPopular = document.getElementById("nextp");
+
+  if (btnPrePopular && btnNextPopular) {
+    if (pagePopular === 1) {
+      btnPrePopular.classList.add("disa"); // Disable previous button initially
     }
-    popularMovie(pagepop);
-  });
-  
-  btnPrep.addEventListener("click", () => {
-    if (pagepop > 1) {
-      pagepop--;
-      if (pagepop === 1) {
-        btnPrep.classList.add("disa"); // Disable previous button if we are on page 1
+
+    btnNextPopular.addEventListener("click", () => {
+      pagePopular++;
+      if (pagePopular > 1) {
+        btnPrePopular.classList.remove("disa"); // Enable previous button if we move to page > 1
       }
-      popularMovie(pagepop);
-    }
-  });
-  
-  function popularMovie(pagepop) {
-    const urlPopularMovie = `https://api.themoviedb.org/3/movie/popular?language=en-US&page=${pagepop}`;
-  
-    fetch(urlPopularMovie, options)
+      fetchPopularMovies(pagePopular);
+    });
+
+    btnPrePopular.addEventListener("click", () => {
+      if (pagePopular > 1) {
+        pagePopular--;
+        if (pagePopular === 1) {
+          btnPrePopular.classList.add("disa"); // Disable previous button if we are on page 1
+        }
+        fetchPopularMovies(pagePopular);
+      }
+    });
+
+    fetchPopularMovies(pagePopular);
+  }
+
+  function fetchPopularMovies(page) {
+    const url = `https://api.themoviedb.org/3/movie/popular?language=en-US&page=${page}`;
+    fetch(url, options)
       .then(response => response.json())
       .then((res) => {
-        const pop_playingmovie = document.getElementById("popplaying-sec");
-        pop_playingmovie.innerHTML = ''; // Clear previous content
-        res.results.forEach(element => {
-          console.log(element);
-          pop_playingmovie.innerHTML += `
-            <div class="cap">
+        const popularMovie = document.getElementById("popplaying-sec");
+        if (popularMovie) {
+          popularMovie.innerHTML = ''; // Clear previous content
+          res.results.forEach(element => {
+            // Create a div for each movie poster and details
+            const movieDiv = document.createElement('div');
+            movieDiv.classList.add('cap');
+            movieDiv.innerHTML = `
               <img src="https://image.tmdb.org/t/p/w500${element.poster_path}" alt="${element.title}">
               <h2>${element.title}</h2>
-            </div>
-          `;
-        });
+            `;
+            // Add click event listener to each movie poster
+            movieDiv.addEventListener('click', () => {
+              // Store selected movie details in localStorage or pass via URL parameters
+              localStorage.setItem('selectedMovie', JSON.stringify(element));
+              // Navigate to movie.html
+              window.location.href = "./movie.html";
+            });
+            // Append the movie div to the container
+            popularMovie.appendChild(movieDiv);
+          });
+        }
       })
       .catch(err => console.error(err));
   }
-  var p = 1;
-  const btnPret = document.getElementById("pret");
-  const btnNextt = document.getElementById("nextt");
-  
-  topMovie(p);
-  
-  if (p === 1) {
-    btnPret.classList.add("disa");
+
+  let pageTopRated = 1;
+  const btnPreTopRated = document.getElementById("pret");
+  const btnNextTopRated = document.getElementById("nextt");
+
+  if (btnPreTopRated && btnNextTopRated) {
+    if (pageTopRated === 1) {
+      btnPreTopRated.classList.add("disa"); // Disable previous button initially
+    }
+
+    btnNextTopRated.addEventListener("click", () => {
+      pageTopRated++;
+      if (pageTopRated > 1) {
+        btnPreTopRated.classList.remove("disa"); // Enable previous button if we move to page > 1
+      }
+      fetchTopRatedMovies(pageTopRated);
+    });
+
+    btnPreTopRated.addEventListener("click", () => {
+      if (pageTopRated > 1) {
+        pageTopRated--;
+        if (pageTopRated === 1) {
+          btnPreTopRated.classList.add("disa"); // Disable previous button if we are on page 1
+        }
+        fetchTopRatedMovies(pageTopRated);
+      }
+    });
+
+    fetchTopRatedMovies(pageTopRated);
   }
-  
-  btnNextt.addEventListener("click", () => {
-    p++;
-    if (p > 1) {
-      btnPret.classList.remove("disa");
-    }
-    topMovie(p);
-  });
-  
-  btnPret.addEventListener("click", () => {
-    if (p > 1) {
-      p--;
-      if (p === 1) {
-        btnPret.classList.add("disa"); // Disable previous button if we are on page 1
-      }
-      topMovie(p);
-    }
-  });
-  
-  function topMovie(p) {
-    const urltopMovie = `https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=${p}`;
-    const options = {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NTlkYWEyMjNiZGQzY2IzNzkyNTk5MDdmNTkxM2NhYyIsIm5iZiI6MTcxOTMzMDU2Ni4zNjEzODIsInN1YiI6IjY2N2FlNTQ3ZmQ3MmNjZmRjZTVhMzYzNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.kAW1bb0FfBlaqALldkj4G215DvJznqjK8N3ZzYfDteE'
-      }
-    };
-  
-    fetch(urltopMovie, options)
+
+  function fetchTopRatedMovies(page) {
+    const url = `https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=${page}`;
+    fetch(url, options)
       .then(response => response.json())
       .then((res) => {
-        // Clear previous content
-        var top_playingmovie = document.getElementById("topplaying-sec");
-        top_playingmovie.innerHTML = '';
-  
-        res.results.forEach(element => {
-          console.log(element);
-          top_playingmovie.innerHTML += `
-          <div class="cap">
-            <img src="https://image.tmdb.org/t/p/w500${element.poster_path}" alt="">
-            <h2>${element.title}</h2>
-          </div>
-          `;
-        });
+        const topRatedMovie = document.getElementById("topplaying-sec");
+        if (topRatedMovie) {
+          topRatedMovie.innerHTML = ''; // Clear previous content
+          res.results.forEach(element => {
+            // Create a div for each movie poster and details
+            const movieDiv = document.createElement('div');
+            movieDiv.classList.add('cap');
+            movieDiv.innerHTML = `
+              <img src="https://image.tmdb.org/t/p/w500${element.poster_path}" alt="${element.title}">
+              <h2>${element.title}</h2>
+            `;
+            // Add click event listener to each movie poster
+            movieDiv.addEventListener('click', () => {
+              // Store selected movie details in localStorage or pass via URL parameters
+              localStorage.setItem('selectedMovie', JSON.stringify(element));
+              // Navigate to movie.html
+              window.location.href = "./movie.html";
+            });
+            // Append the movie div to the container
+            topRatedMovie.appendChild(movieDiv);
+          });
+        }
       })
       .catch(err => console.error(err));
   }
-  
+
+  let pageUpcoming = 1;
+  const btnPreUpcoming = document.getElementById("preu");
+  const btnNextUpcoming = document.getElementById("nextu");
+
+  if (btnPreUpcoming && btnNextUpcoming) {
+    if (pageUpcoming === 1) {
+      btnPreUpcoming.classList.add("disa"); // Disable previous button initially
+    }
+
+    btnNextUpcoming.addEventListener("click", () => {
+      pageUpcoming++;
+      if (pageUpcoming > 1) {
+        btnPreUpcoming.classList.remove("disa"); // Enable previous button if we move to page > 1
+      }
+      fetchUpcomingMovies(pageUpcoming);
+    });
+
+    btnPreUpcoming.addEventListener("click", () => {
+      if (pageUpcoming > 1) {
+        pageUpcoming--;
+        if (pageUpcoming === 1) {
+          btnPreUpcoming.classList.add("disa"); // Disable previous button if we are on page 1
+        }
+        fetchUpcomingMovies(pageUpcoming);
+      }
+    });
+
+    fetchUpcomingMovies(pageUpcoming);
+  }
+
+  function fetchUpcomingMovies(page) {
+    const url = `https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=${page}`;
+    fetch(url, options)
+      .then(response => response.json())
+      .then((res) => {
+        const upcomingMovie = document.getElementById("upplaying-sec");
+        if (upcomingMovie) {
+          upcomingMovie.innerHTML = ''; // Clear previous content
+          res.results.forEach(element => {
+            // Create a div for each movie poster and details
+            const movieDiv = document.createElement('div');
+            movieDiv.classList.add('cap');
+            movieDiv.innerHTML = `
+              <img src="https://image.tmdb.org/t/p/w500${element.poster_path}" alt="${element.title}">
+              <h2>${element.title}</h2>
+            `;
+            // Add click event listener to each movie poster
+            movieDiv.addEventListener('click', () => {
+              // Store selected movie details in localStorage or pass via URL parameters
+              localStorage.setItem('selectedMovie', JSON.stringify(element));
+              // Navigate to movie.html
+              window.location.href = "./movie.html";
+            });
+            // Append the movie div to the container
+            upcomingMovie.appendChild(movieDiv);
+          });
+        }
+      })
+      .catch(err => console.error(err));
+  }
+
+  // Firebase Authentication State Change Listener
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in
+      const uname = document.getElementById("uname");
+      if (uname) uname.innerHTML = user.email;
+      console.log("User is signed in:", user);
+      if (window.location.pathname === "/index.html" || window.location.pathname === "/register.html") {
+        window.location.href = "./home.html";
+      }
+    } else {
+      // User is signed out
+      console.log("No user is signed in.");
+      if (window.location.pathname === "/home.html") {
+        window.location.href = "./index.html";
+      }
+    }
+  });
+
+  // Logout Functionality
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      signOut(auth).then(() => {
+        window.location.href = "./index.html";
+      }).catch((error) => {
+        alert(error);
+      });
+    });
+  }
 });
+

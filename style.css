@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
 *{
     margin: 0;
     padding: 0;
@@ -6,6 +8,10 @@
 html , body{
     height: 100%;
     width: 100%;
+    font-family: "Rubik", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
 }
 .main{
     position: relative;
@@ -62,3 +68,126 @@ cursor: pointer;
 .home p{
      font-size: 2vw;
 }
+.login-cover,.reg-cover{
+    width: 100%;
+    height: 100%;
+    /* background-color: white; */
+display: flex;
+justify-content: center;
+align-items: center;
+ color: white;
+padding-top: 80px;
+padding-left: 7px;
+padding-right: 7px;
+}
+.login-cover form{
+    width: 500px;
+    height: 80vh;
+    background-color: rgba(0, 0, 0, 0.819);
+border-radius: 10px;
+box-shadow: rgba(0, 0, 0, 0.4) 0px 30px 90px;
+padding: 26px 30px;
+}
+.reg-cover form{
+    width: 500px;
+    height: 84vh;
+    background-color: rgba(0, 0, 0, 0.819);
+border-radius: 10px;
+box-shadow: rgba(0, 0, 0, 0.4) 0px 30px 90px;
+padding: 26px 30px;
+}
+form h2{
+    font-weight: 550;
+    padding-bottom: 18px;
+}
+form .inp{
+width: 100%;
+padding: 16px;
+margin-bottom: 19px;
+border-radius: 7px;
+color: white;
+border: none;
+background-color: rgba(105, 101, 101, 0.399);
+cursor: pointer;
+
+}
+form .inp::placeholder{
+    color: #969696;
+    font-size: 15px;
+}
+form button{
+width: 100%;
+padding: 16px;
+margin-bottom: 19px;
+border-radius: 7px;
+border: none;
+cursor: pointer;
+background-color: #E50913;
+color: white;
+font-weight: 700;
+font-size: 20px;
+transition: 0.3s;
+}
+form button:hover{
+    background-color: #e50914ce;
+    color: rgba(255, 255, 255, 0.864);
+}
+.ful{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 7.8vw;
+}.half1{
+    font-size: 13px;
+
+}.half2{
+    font-size: 13px;
+}
+form h4{
+    font-size: 18px;
+    font-weight: 300;
+    padding-bottom: 18px;
+
+}
+form h4 a{
+    color: white;
+    text-decoration: none;
+    font-weight: 700;
+cursor: pointer;
+}.po{
+    font-size: 10px;
+}.po a{
+color: rgb(251, 2, 255)
+;
+text-decoration: none;
+cursor: pointer;
+
+}
+@media screen and (max-width: 390px) {
+  .reg-cover{
+    width: 100%;
+    height: 100vh;
+    padding-top: 0px;
+    padding: 0px;
+    border-radius: 0px;
+
+  }
+  .login-cover{
+    width: 100%;
+    height: 100vh;
+    padding-top: 0px;
+    padding: 0px;
+    border-radius: 0px;
+
+  }
+  .oik{
+    display: none;
+  }
+}
+
+
+::selection {
+    background: red;
+    color: white;
+  }
+  
